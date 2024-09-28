@@ -1,31 +1,19 @@
-module SR_Flip_Flop (
-    S, R, Q, Qn, CLK
-);
-input S, R, CLK;
-output Q, Qn;
-wire S1, R1;
+module SR_FF_Structural (S, R, clk, rst, Q);
+input S, R, clk, rst;
+output Q;
 
-nand(S1, S, CLK);
-nand(R1, R, CLK);
-nand(Q, S1, Qn);
-nand(Qn, R1, Q);
-    
-endmodule
+wire Q_not, S_not, R_not, D1, D2;
 
-module tb_SR_Flip_Flop();
-reg S, R, CLK;
-wire Q, Qn;
-SR_Flip_Flop F(S, R, Q, Qn, CLK);
-initial begin
-    CLK = 0;
-    forever 
-         #5 CLK =~CLK
-    end
-initial begin
-    #10 S=0; R=0;
-    #10 R=1;
-    #10 S=1; R=0;
-    #10 R=1;
-    #10 $finish;
-    end
+nand latch1 (Q_not, Q, rst);
+nand latch2 (Q, Q_not, D1);
+
+
+not gate1 (S_not, S);
+not gate2 (R_not, R);
+and gate3 (D1, S_not, R);
+and gate4 (D2, S, R_not);
+or gate5 (D1, D1, D2);
+
+and gate6 (Q, Q_not, clk);
+
 endmodule

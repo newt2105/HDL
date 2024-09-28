@@ -1,31 +1,18 @@
-module JK_Flip_Flop (
-    J, K, CLK, Q, Qn
-);
-input J, K, CLK;
-output Q, Qn;
-wire J1, K1
+module JK_FF (J, K, CLK, rst, Q);
+input J, K, CLK, rst;
+output Q;
 
-nand(J1, Qn, J, CLK);
-nand(K1, Q, K, CLK);
-nand(Q, J1, Qn);
-nand(Qn, K1, Q);
-    
-endmodule
+wire Q_not, J_not, K_not, D1, D2;
 
-module tb_JK_Flip_Flop();
-reg J, K, CLK;
-wire Q, Qn;
+nand latch1 (Q_not, Q, rst);
+nand latch2 (Q, Q_not, D1);
 
-JK_Flip_Flop F(J, K, CLK, Q, Qn);
-initial begin
-    CLK = 0;
-    forever #5 CLK = ~CLK;
-end
-initial begin
-    #10 J=0; K=0;
-    #10 K=1;
-    #10 J=1; K=0;
-    #10 J=1; K=1;
-    #10 $finish;
-end
+not gate1 (J_not, J);
+not gate2 (K_not, K);
+and gate3 (D1, J, K_not);
+and gate4 (D2, J_not, K);
+or gate5 (D1, D1, D2);
+
+and gate6 (Q, Q_not, CLK);
+
 endmodule

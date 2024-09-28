@@ -1,32 +1,12 @@
-module T_Flip_Flop (
-    T, CLK, Q, Qn
+module T_FF (
+    T, clk, rst, Q
 );
-input T, CLK;
-output Q, Qn;
-wire T1, T2;
+    input T, clk, rst;
+    output Q;
+    wire D1, D2, Q_prev;
 
-and(T1, T, CLK, Q);
-and(T2, T, CLK, Qn);
-nor(Q, T1, Qn);
-nor(Qn, T2, Q);
-    
-endmodule
-
-module tb_T_Flip_Flop();
-reg T, CLK;
-wire Q, Qn;
-
-T_Flip_Flop F(T, CLK, Q, Qn);
-initial begin
-    CLK = 0;
-    forever #5 CLK=~CLK;
-end
-initial begin
-    #10 T=0;
-    #10 T=1;
-    #10 T=0;
-    #10 T=1;
-    #10 $finish;
-end
+    D_FF dff1 (D1, clk, rst, Q_prev);
+    xor gate1 (D2, T, Q_prev);
+    D_FF dff2 (D2, clk, rst, Q);
 
 endmodule
